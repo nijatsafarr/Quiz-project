@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      body {
+        background-color: darkblue;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .container {
+       width: 400px;
+       height: auto;
+       background-color: aliceblue; 
+       border-radius: 15px;
+       padding: 10px;
+       margin: 0 auto;
+      
+      }
+      button {
+        width: 101px;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        left: 30%;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        color: aliceblue;
+        background-color: darkslateblue;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: crimson;
+        transition: 0.6s;
+      }
+      #timer {
+        font-weight: 700;
+        color: red;
+      }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <div class="cart"></div>
+    <button onclick="nextq()"> Next</button>
+    <div id="timer">Time: 60s</div>
+    </div>
+    <script>
+        let questions = {
+            "sual": "Ümumi bilik",
+            "movzu": [
+                {
+                    "q": "Azərbaycanın paytaxtı hansı şəhərdir?",
+                    "a": [
+                        "Lənkəran",
+                        "Bakı",
+                        "Gəncə",
+                        "Sumqayıt"
+                    ],
+                    "t": 1
+                },
+                {
+                    "q": "Dünya üzrə ən böyük okean hansıdır?",
+                    "a": [
+                        "Atlantik okean",
+                        "Sakit okean",
+                        "Şimali okean",
+                        "Hind okean"
+                    ],
+                    "t": 1
+                },
+                {
+                    "q": "Hansı planet Güneş sisteminin ən böyük planetidir?",
+                    "a": [
+                        "Saturn",
+                        "Yupiter",
+                        "Mars",
+                        "Venera"
+                    ],
+                    "t": 1
+                },
+                {
+                    "q": "Azərbaycanın sərhədləri hansı ölkələrlə üzləşir?",
+                    "a": [
+                        "Gürcüstan, Ermənistan, Rusiya, Türkiyə, İran",
+                        "Rusiya və İran",
+                        "Rusiya və Türkiyə",
+                        "Türkiyə və İran"
+                    ],
+                    "t": 0
+                },
+                {
+                    "q": "Ən böyük qitə hansıdır?",
+                    "a": [
+                        "Avstraliya",
+                        "Asiya",
+                        "Şimali Amerika",
+                        "Afrika",
+                        "Antarktida"
+                    ],
+                    "t": 1
+                },
+                {
+                    "q": "Müasir futbolun anası sayılan ölkə hansıdır?",
+                    "a": [
+                        "Almaniya",
+                        "Birinci Böyük Britaniya",
+                        "Fransa",
+                        "İspaniya"
+                    ],
+                    "t": 0
+                },
+                {
+                    "q": "Azərbaycanın hökumət formasında rənglər hansılardır?",
+                    "a": [
+                        "Qara və ağ",
+                        "Mavi və ağ",
+                        "Yaşıl və sari",
+                        "Qırmızı və qara"
+                    ],
+                    "t": 0
+                },
+                {
+                    "q": "Azərbaycanda hansı dil ən çox danışılan dildir?",
+                    "a": [
+                        "Türkcə",
+                        "Azərbaycanca",
+                        "Rusca",
+                        "Farsça",
+                        "Talışça"
+                    ],
+                    "t": 1
+                },
+                {
+                    "q": "Dünya ən uzun çayı hansıdır?",
+                    "a": [
+                        "Mississippi çayı",
+                        "Yangzi çayı",
+                        "Nil çayı",
+                        "Amazon çayı",
+                        "Kür"
+                    ],
+                    "t": 2
+                },
+                {
+                    "q": "İlk kompüter kim tərəfindən yaradılmışdır?",
+                    "a": [
+                        "Mark Zuckerberg",
+                        "Bill Gates",
+                        "Steve Jobs",
+                        "Charles Babbage"
+                    ],
+                    "t": 3
+                }
+            ]
+        }
+        const cart = document.querySelector(".cart");
+        const timedisplay = document.querySelector("#timer")
+        let x = 0;
+        let userAnswers = [];
+
+        let timeLeft = 60
+        let timer
+
+
+        const startTimer = () => {
+            timer = setInterval(() => {
+                timeLeft--
+
+                timedisplay.innerText = `Time: ${timeLeft}s`
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer)
+                    showResult()
+                }
+            }, 1000)
+        }
+
+
+        let correctAnswers = [];
+        correctAnswers = questions.movzu.map(q => q.t)
+
+        const start = () => {
+            if (x >= questions.movzu.length) {
+                showResult()
+                return
+            }
+            const item = questions.movzu[x]
+
+            cart.innerHTML = `
+                <h3>${item.q}</h3>
+                ${item.a.map((ans, i) => `
+                    <label>
+                        <input type="radio"   name="answer" value="${i}">
+                        ${ans}
+                    </label><br>
+                    `).join("")}`
+        }
+
+        const nextq = () => {
+            const selected = document.querySelector('input[name="answer"]:checked')
+
+            if (!selected) {
+                alert("Cavab seç")
+                return
+            }
+
+            userAnswers.push(Number(selected.value))
+            x++
+            start()
+        }
+
+        const showResult = () => {
+            clearInterval(timer)
+            let correct = 0
+            let netice = `<h2 style="color:darkblue;">Nəticə</h2>`
+            for (let i = 0; i < correctAnswers.length; i++) {
+                const question = questions.movzu[i];
+                const userAnswer = userAnswers[i];
+                const correctAnswer = correctAnswers[i];
+                if (correctAnswer === userAnswer) {
+                    correct++;
+                    netice += `
+                    <p style="color:green;"> Düzgün (${question.a[correctAnswer]})</p>`
+                } else {
+                  netice += `
+                   <p style="color:red;">Cavab (${question.q})</br>
+                   Düzgün: ${question.a[correctAnswer]} 
+                    </p>`  
+                }
+            }
+
+            let wrong = correctAnswers.length - correct
+            
+            netice += `
+            <hr>
+                <p class="correct">Düzgün: ${correct}</p>
+                <p class="wrong">Yanlış: ${wrong}</p>`
+            cart.innerHTML = netice
+        }
+
+        start()
+        startTimer()
+    </script>
+</body>
+
+</html>
